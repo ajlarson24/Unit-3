@@ -58,13 +58,11 @@ window.onload = function(){
         return d.population;
     });
 
-    //scale for circles center y coordinate
+    //Example 3.3 line 12...scale for circles center y coordinate
     var y = d3.scaleLinear()
-        .range([440, 95])
-        .domain([
-            minPop,
-            maxPop
-        ]);
+        .range([450, 50]) //was 440, 95
+        .domain([0, 700000]); //was minPop, maxPop
+
     //color scale generator 
     var color = d3.scaleLinear()
         .range([
@@ -78,7 +76,7 @@ window.onload = function(){
 
     //above Example 2.8 line 20
     var x = d3.scaleLinear() //create the scale
-        .range([90, 810]) //output min and max
+        .range([90, 750]) //output min and max
         .domain([0, 3]); //input min and max
 
     //Example 2.6 line 3
@@ -119,6 +117,51 @@ window.onload = function(){
         .call(yAxis);
 
     yAxis(axis);
+
+    //below Example 3.9...create a text element and add the title
+    var title = container.append("text")
+        .attr("class", "title")
+        .attr("text-anchor", "middle")
+        .attr("x", 450)
+        .attr("y", 30)
+        .text("City Populations");
+
+    //Example 3.14 line 1...create circle labels
+    var labels = container.selectAll(".labels")
+        .data(cityPop)
+        .enter()
+        .append("text")
+        .attr("class", "labels")
+        .attr("text-anchor", "left")
+        .attr("y", function(d){
+            //vertical position centered on each circle
+            return y(d.population);
+        });
+
+    //first line of label
+    var nameLine = labels.append("tspan")
+        .attr("class", "nameLine")
+        .attr("x", function(d,i){
+            //horizontal position to the right of each circle
+            return x(i) + Math.sqrt(d.population * 0.01 / Math.PI) + 5;
+        })
+        .text(function(d){
+            return d.city;
+        });
+
+    //create format generator
+    var format = d3.format(",");
+
+    //Example 3.16 line 1...second line of label
+    var popLine = labels.append("tspan")
+        .attr("class", "popLine")
+        .attr("x", function(d,i){
+            return x(i) + Math.sqrt(d.population * 0.01 / Math.PI) + 5;
+        })
+        .attr("dy", "15") //vertical offset
+        .text(function(d){
+            return "Pop. " + format(d.population); //use format generator to format numbers
+        });
 
     console.log(innerRect)
     console.log(container)
