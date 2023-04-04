@@ -31,7 +31,8 @@ function setMap(){
     promises.push(d3.json("data/NAmerica.topojson")); //load choropleth spatial data    
     Promise.all(promises).then(callback);
 
-    function callback(data){    
+    function callback(data){
+            
         //Example 2.6 line 1...create graticule generator
         var graticule = d3.geoGraticule()
             .step([5, 5]); //place graticule lines every 5 degrees of longitude and latitude
