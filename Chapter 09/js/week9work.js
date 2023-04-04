@@ -56,8 +56,8 @@ function setMap(){
         console.log(namerica);
 
         //translate namerica TopoJSON
-        var namericaCountries = topojson.feature(namerica, namerica.objects.NAmerica)
-        var namerica = topojson.feature(namerica, namerica.objects.NAmerica)
+        var namericaCountries = topojson.feature(namerica, namerica.objects.NAmerica),
+        namerica = topojson.feature(namerica, namerica.objects.NAmerica).features;
 
         //add namerica countries to map
         var countries = map.append("path")
