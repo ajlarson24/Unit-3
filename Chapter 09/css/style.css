@@ -2,7 +2,12 @@
 /*ADDING LINE TO REUPLOAD*/
 .countries {
     stroke: #CCC;
+    fill-opacity: 0.2;
     stroke-width: 1px;
+}
+
+.regions {
+    fill-opacity: 0.2;    
 }
 
 .gratLines {

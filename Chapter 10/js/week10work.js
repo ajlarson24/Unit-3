@@ -26,19 +26,20 @@ function setMap(){
 
     //use Promise.all to parallelize asynchronous data loading
     var promises = [    
-        d3.csv("data/NAmericaData.csv"), //load attributes from csv       
+        d3.csv("data/NAmericaData.csv"), //load attributes from csv
+        d3.json("data/WorldCountries.topojson"), //load basemap data       
         d3.json("data/NAmerica.topojson"), //load choropleth spatial data
     ];    
     Promise.all(promises).then(callback);
 
     function callback(data){
-        var csvData = data[0], namerica = data[1];
+        var csvData = data[0], world = data[1], namerica = data[2];
 
         //translate namerica TopoJSON
-        var namericaCountries = topojson.feature(namerica, namerica.objects.NAmerica),
-            namerica = topojson.feature(namerica, namerica.objects.NAmerica).features;
-            console.log(csvData);
-            console.log(namerica);
+        var worldCountries = topojson.feature(world, world.objects.WorldCountries),
+            namericaCountries = topojson.feature(namerica, namerica.objects.NAmerica).features;
+        console.log(csvData);
+        console.log(namericaCountries);
             
         //variables for data join
         var attrArray = ["2023_Population", "vGDP_PrCap", "Area_Mi", "vPop_Dens", "Life_Exp"];
@@ -49,9 +50,9 @@ function setMap(){
             var csvKey = csvRegion.SOVEREIGNT; //the CSV primary key
 
             //loop through geojson regions to find correct region
-            for (var a=0; a<namerica.length; a++){
+            for (var a=0; a<namericaCountries.length; a++){
 
-                var geojsonProps = namerica[a].properties; //the current region geojson properties
+                var geojsonProps = namericaCountries[a].properties; //the current region geojson properties
                 var geojsonKey = geojsonProps.SOVEREIGNT; //the geojson primary key
 
                 //where primary keys match, transfer csv data to geojson properties object
@@ -65,11 +66,11 @@ function setMap(){
                 };
             };
         };
-        console.log(namerica)
+        console.log(namericaCountries)
 
         //translate namerica TopoJSON
-        var namericaCountries = topojson.feature(namerica, namerica.objects.NAmerica),
-            namerica = topojson.feature(namerica, namerica.objects.NAmerica).features;        
+        var worldCountries = topojson.feature(world, world.objects.WorldCountries),
+            namericaCountries = topojson.feature(namerica, namerica.objects.NAmerica).features;        
             
         //Example 2.6 line 1...create graticule generator
         var graticule = d3.geoGraticule().step([5, 5]); //place graticule lines every 5 degrees of longitude and latitude
@@ -91,26 +92,26 @@ function setMap(){
             .attr("d", path); //project graticule lines
 
         //translate namerica TopoJSON
-        var namericaCountries = topojson.feature(namerica, namerica.objects.NAmerica),
-            namerica = topojson.feature(namerica, namerica.objects.NAmerica).features;
-            console.log(csvData);
-            console.log(namerica);
+        var worldCountries = topojson.feature(world, world.objects.WorldCountries),
+            namericaCountries = topojson.feature(namerica, namerica.objects.NAmerica).features;
+        console.log(csvData);
+        console.log(namerica);
 
         //add namerica countries to map
         var countries = map
             .append("path")
-            .datum(namericaCountries)
-            .attr("class", "countries")
+            .datum(worldCountries)
+            .attr("class", "world")
             .attr("d", path);
 
         //add namerica regions to map
         var regions = map
-            .selectAll(".regions")
-            .data(namerica)
+            .selectAll(".namericaCountries")
+            .data(namericaCountries)
             .enter()
             .append("path")
             .attr("class", function(d){
-                return "regions " + d.properties.SOVEREIGNT;
+                return "namericaCountries " + d.properties.SOVEREIGNT;
             })
             .attr("d", path);
             
