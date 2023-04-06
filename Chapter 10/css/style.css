@@ -2,12 +2,13 @@
 /*ADDING LINE TO REUPLOAD*/
 .world {
     stroke: #CCC;
-    stroke-width: .5px;
+    stroke-width: .25px;
     fill: snow;
 }
 
 .namericaCountries{
     stroke: #CCC;
+    stroke-width: .25px;
 }
 
 .gratLines {
