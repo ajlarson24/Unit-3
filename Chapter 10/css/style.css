@@ -1,8 +1,13 @@
 /*Add CSS styles here*/
 /*ADDING LINE TO REUPLOAD*/
-.countries {
+.world {
     stroke: #CCC;
-    stroke-width: 1px;
+    stroke-width: .5px;
+    fill: snow;
+}
+
+.namericaCountries{
+    stroke: #CCC;
 }
 
 .gratLines {
