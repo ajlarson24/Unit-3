@@ -59,6 +59,7 @@
                 namericaCountries = joinData(namericaCountries, csvData);
 
                 setEnumerationUnits(namericaCountries,map,path);
+                console.log(namericaCountries)
             };
     };
 
@@ -106,7 +107,7 @@
                     };
                 };
             };
-            return namericaCountries;
+            return namericaCountries;            
         }
         
         function setEnumerationUnits(namericaCountries,map,path){
