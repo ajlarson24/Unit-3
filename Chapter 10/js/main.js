@@ -224,7 +224,7 @@ function setChart(csvData, colorScale){
         .attr("x", 40)
         .attr("y", 40)
         .attr("class", "chartTitle")
-        .text(expressed + " in each Country");
+        .text(expressed + " in each North American Country");
 
     //create vertical axis generator
     var yAxis = d3.axisLeft()
