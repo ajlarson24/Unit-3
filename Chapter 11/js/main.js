@@ -3,7 +3,7 @@
 
     //pseudo-global variables
     var attrArray = ["2023_Population", "GDP_PrCap", "Area_Mi", "Pop_Dens", "Life_Exp"]; //list of attributes
-    var expressed = attrArray[0]; //initial attribute
+    var expressed = attrArray[1]; //initial attribute
     
     //chart frame dimensions
     var chartWidth = window.innerWidth * 0.425,
@@ -214,6 +214,13 @@ function setChart(csvData, colorScale){
         .attr("height", chartInnerHeight)
         .attr("transform", translate);
 
+    //create a text element for the chart title
+    var chartTitle = chart
+        .append("text")
+        .attr("x", 40)
+        .attr("y", 40)
+        .attr("class", "chartTitle");
+
     //create a scale to size bars proportionally to frame and for axis
     var yScale = d3.scaleLinear()
         .range([463, 0])
@@ -349,7 +356,7 @@ function updateChart(bars, n, colorScale){
 
     //at the bottom of updateChart()...add text to chart title
     var chartTitle = d3.select(".chartTitle")
-        .text("Number of Variable " + expressed + " in each region");
+        .text(expressed + " in each region");
 
 };
 
