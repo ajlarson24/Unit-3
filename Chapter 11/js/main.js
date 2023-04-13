@@ -241,7 +241,7 @@ function setChart(csvData, colorScale){
         .on("mouseover", function(event, d){
             highlight(d);
         })
-        .on("mouseover", function(event, d){
+        .on("mouseout", function(event, d){
             dehighlight(d);
         })
         .on("mousemove", moveLabel);
@@ -364,7 +364,7 @@ function updateChart(bars, n, colorScale){
 function highlight(props){
     //change stroke
     var selected = d3.selectAll("." + props.SOVEREIGNT)
-        .style("stroke", "blue")
+        .style("stroke", "orange")
         .style("stroke-width", "2");
 
     setLabel(props)
@@ -396,7 +396,7 @@ function dehighlight(props){
 //function to create dynamic label
 function setLabel(props){
     //label content
-    var labelAttribute = "<h1>" + props[expressed] +
+    var labelAttribute = "<h1>" + props.SOVEREIGNT + "</h1><h1>" + props[expressed] +
         "</h1><b>" + expressed + "</b>";
 
     //create info label div
