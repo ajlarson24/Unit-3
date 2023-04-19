@@ -4,11 +4,12 @@
     //pseudo-global variables
     var attrArray = ["2023 Population", "GDP Per Capita", "Area Mi2", "Population Density", "Life Expectancy"]; //list of attributes
     var expressed = attrArray[1]; //initial attribute
+    var max = 65.28 + (65.28 * 0.5);
     
     //chart frame dimensions
     var chartWidth = window.innerWidth * 0.425,
-        chartHeight = 473,
-        leftPadding = 25,
+        chartHeight = 700,
+        leftPadding = 35,
         rightPadding = 2,
         topBottomPadding = 5,
         chartInnerWidth = chartWidth - leftPadding - rightPadding,
@@ -17,8 +18,8 @@
     
     //create a scale to size bars proportionally to frame and for axis
     var yScale = d3.scaleLinear()
-        .range([463, 0])
-        .domain([0, 110]);
+        .range([690, 0])
+        .domain([0, max]);
     
     //begin script when window loads
     window.onload = setMap();
@@ -153,6 +154,7 @@
             var val = parseFloat(data[i][expressed]);
             domainArray.push(val);
         };
+        max = d3.max(domainArray);
 
         //assign array of expressed values as scale domain
         colorScale.domain(domainArray);
@@ -193,14 +195,7 @@ function setEnumerationUnits(namericaCountries,map,path, colorScale){
 //function to create coordinated bar chart
 function setChart(csvData, colorScale){
     //chart frame dimensions
-    var chartWidth = window.innerWidth * 0.425,
-        chartHeight = 473,
-        leftPadding = 25,
-        rightPadding = 2,
-        topBottomPadding = 5,
-        chartInnerWidth = chartWidth - leftPadding - rightPadding,
-        chartInnerHeight = chartHeight - topBottomPadding * 2,
-        translate = "translate(" + leftPadding + "," + topBottomPadding + ")";
+   
 
     //create a second svg element to hold the bar chart
     var chart = d3.select("body")
@@ -219,14 +214,10 @@ function setChart(csvData, colorScale){
     //create a text element for the chart title
     var chartTitle = chart
         .append("text")
-        .attr("x", 40)
+        .attr("x", 400)
         .attr("y", 40)
         .attr("class", "chartTitle");
 
-    //create a scale to size bars proportionally to frame and for axis
-    var yScale = d3.scaleLinear()
-        .range([463, 0])
-        .domain([0, 100]);
 
     //in setChart()...set bars for each province
     var bars = chart.selectAll(".bar")
@@ -330,6 +321,17 @@ function changeAttribute(attribute, csvData){
         })
         .duration(500);
 
+    yScale = d3.scaleLinear()
+        .range([690, 0])
+        .domain([0, max]);
+
+    //create vertical axis generator
+    var yAxis = d3.axisLeft()
+        .scale(yScale);
+
+    //place axis
+    d3.select( ".axis").call(yAxis);
+
     updateChart(bars, csvData.length, colorScale);
 }; //end of changeAttribute()
 
@@ -341,7 +343,7 @@ function updateChart(bars, n, colorScale){
         })
         //size/resize bars
         .attr("height", function(d, i){
-            return 463 - yScale(parseFloat(d[expressed]));
+            return 690 - yScale(parseFloat(d[expressed]));
         })
         .attr("y", function(d, i){
             return yScale(parseFloat(d[expressed])) + topBottomPadding;
@@ -438,16 +440,20 @@ function moveLabel(){
         .style("top", y + "px");
 };
 
+//function for webpage information
 function webInfo(){
-    var pageTitle = d3.select("body")
+    //add info box with text
+    var infoBox = d3.select("body")
         .append("div")
-        .attr("class", "pageTitle")
-        .html('<p aligned=left')
+        .attr("class", "infoBox")
+        .html('<p align=left>This map and corresponding chart highlight various attributes of some North American Countries. Take a look at how some of our closest neighbors compare to each other. Use the dropdown menu to change attributes. Also, feel free to explore the chart to locate outliers or other interesting trends.</p><p align=left>Sources of Data:</p><p align=left>Population data: <a href="https://population.un.org/wpp/">United Nations Population Data</a> &nbsp;&nbsp;&nbsp;&nbsp; GDP Per Capita Data: <a href="https://www.imf.org/en/Home">International Money Fund</a> &nbsp;&nbsp;&nbsp;&nbsp; Area Data: <a href="https://www.worldatlas.com/">World Atlas</a> &nbsp;&nbsp;&nbsp;&nbsp; Life Expectancy Data: <a href="https://www.worldbank.org/en/home">World Bank Group</a></p>')
+
+    //add metadata text
     var metadata = d3.select("body")
         .append("div")
         .attr("class", "metadata")
         .attr("text-anchor", "right")
-        .html('<p align=right>Map Created by Alex Larson for UW-Madison - GEOG575</p><p align=right>Mapped Data from UN Population Projections (Population, presented in 10,000 persons), World Bank Group (Life Expectancy, presented in years),</p><p align=right>International Money Fund (GDP, presented in 1000 USD), World Atlas (Area presented in 10 miles squared), Population Density Derived from Population over Area</p><p align=right>Basemap Shapefiles from Natural Earth</p><p align=right>Map Projection: Azimuthal Equal Area </p>');    
+        .html('<p align=right>Map Created by Alex Larson for UW-Madison - GEOG575</p><p align=right>Basemap Shapefiles from Natural Earth</p><p align=right>Map Projection: Azimuthal Equal Area </p><p align=right>Mapped Data from UN Population Projections (Population, presented in 10,000 persons), World Bank Group (Life Expectancy, presented in years),</p><p align=right>International Money Fund (GDP, presented in 1000 USD), World Atlas (Area presented in 10 miles squared), Population Density Derived from Population over Area</p>');    
 
     //add background to metadata
     var metaBackground = d3.select("body")
