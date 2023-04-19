@@ -154,7 +154,7 @@
             var val = parseFloat(data[i][expressed]);
             domainArray.push(val);
         };
-        max = d3.max(domainArray);
+        max = d3.max(domainArray)*1.05;
 
         //assign array of expressed values as scale domain
         colorScale.domain(domainArray);
