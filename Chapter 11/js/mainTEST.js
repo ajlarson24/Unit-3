@@ -2,7 +2,7 @@
 (function(){
 
     //pseudo-global variables
-    var attrArray = ["2023_Population", "GDP_PrCap", "Area_Mi", "Pop_Dens", "Life_Exp"]; //list of attributes
+    var attrArray = ["2023 Population", "GDP Per Capita", "Area Mi2", "Population Density", "Life Expectancy"]; //list of attributes
     var expressed = attrArray[1]; //initial attribute
     
     //chart frame dimensions
@@ -82,6 +82,8 @@
             setChart(csvData, colorScale);
 
             createDropdown(csvData);
+
+            webInfo()
         };
     };  //end of setMap()
 
@@ -356,7 +358,7 @@ function updateChart(bars, n, colorScale){
 
     //at the bottom of updateChart()...add text to chart title
     var chartTitle = d3.select(".chartTitle")
-        .text(expressed + " in each region");
+        .text(expressed + " in North America");
 
 };
 
@@ -435,5 +437,24 @@ function moveLabel(){
         .style("left", x + "px")
         .style("top", y + "px");
 };
+
+function webInfo(){
+    var pageTitle = d3.select("body")
+        .append("div")
+        .attr("class", "pageTitle")
+        .html('<p aligned=left')
+    var metadata = d3.select("body")
+        .append("div")
+        .attr("class", "metadata")
+        .attr("text-anchor", "right")
+        .html('<p align=right>Map Created by Alex Larson for UW-Madison - GEOG575</p><p align=right>Mapped Data from UN Population Projections (Population, presented in 10,000 persons), World Bank Group (Life Expectancy, presented in years),</p><p align=right>International Money Fund (GDP, presented in 1000 USD), World Atlas (Area presented in 10 miles squared), Population Density Derived from Population over Area</p><p align=right>Basemap Shapefiles from Natural Earth</p><p align=right>Map Projection: Azimuthal Equal Area </p>');    
+
+    //add background to metadata
+    var metaBackground = d3.select("body")
+        .append("svg")
+        .attr("class", "metaBackground")
+        .attr("height", 110)
+        .attr("width", window.innerWidth);
+}
 
 })(); //last line of main.js
