@@ -2,8 +2,8 @@
 (function(){
 
     //pseudo-global variables
-    var attrArray = ["2023 Population", "GDP Per Capita", "Area Mi2", "Population Density", "Life Expectancy"]; //list of attributes
-    var expressed = attrArray[1]; //initial attribute
+    var attrArray = ["CO2 Emissions mT per Capita", "GDP Per Capita", "Percent of Total Protected Areas", "Population Density", "Life Expectancy"]; //list of attributes
+    var expressed = attrArray[0]; //initial attribute
     var max = 65.28 + (65.28 * 0.5);
     
     //chart frame dimensions
@@ -446,7 +446,7 @@ function webInfo(){
     var infoBox = d3.select("body")
         .append("div")
         .attr("class", "infoBox")
-        .html('<p align=left>This map and corresponding chart highlight various attributes of some North American Countries. Take a look at how some of our closest neighbors compare to each other. Use the dropdown menu to change attributes. Also, feel free to explore the chart to locate outliers or other interesting trends.</p><p align=left>Sources of Data:</p><p align=left>Population data: <a href="https://population.un.org/wpp/">United Nations Population Data</a> &nbsp;&nbsp;&nbsp;&nbsp; GDP Per Capita Data: <a href="https://www.imf.org/en/Home">International Money Fund</a> &nbsp;&nbsp;&nbsp;&nbsp; Area Data: <a href="https://www.worldatlas.com/">World Atlas</a> &nbsp;&nbsp;&nbsp;&nbsp; Life Expectancy Data: <a href="https://www.worldbank.org/en/home">World Bank Group</a></p>')
+        .html('<p align=left>This map and corresponding chart highlight various attributes of some North American Countries. Take a look at how some of our closest neighbors compare to each other. Use the dropdown menu to change attributes. Also, feel free to explore the chart to locate outliers or other interesting trends.</p><p align=left>Sources of Data:</p><p align=left>CO2 Emmission data: <a href="https://data.worldbank.org/indicator/EN.ATM.CO2E.PC">World Bank Emission Data</a> &nbsp;&nbsp;&nbsp;&nbsp; GDP Per Capita Data: <a href="https://www.imf.org/en/Home">International Money Fund</a> &nbsp;&nbsp;&nbsp;&nbsp; Protected Areas Data: <a href="https://data.worldbank.org/indicator/ER.LND.PTLD.ZS">World Bank Protected Areas</a> &nbsp;&nbsp;&nbsp;&nbsp; Life Expectancy Data: <a href="https://www.worldbank.org/en/home">World Bank Group</a></p>')
 
     //add metadata text
     var metadata = d3.select("body")

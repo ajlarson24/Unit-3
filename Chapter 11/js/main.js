@@ -2,13 +2,14 @@
 (function(){
 
     //pseudo-global variables
-    var attrArray = ["2023_Population", "GDP_PrCap", "Area_Mi", "Pop_Dens", "Life_Exp"]; //list of attributes
-    var expressed = attrArray[1]; //initial attribute
+    var attrArray = ["CO2 Emissions mT per Capita", "GDP Per Capita", "Percent of Total Protected Areas", "Population Density", "Life Expectancy"]; //list of attributes
+    var expressed = attrArray[0]; //initial attribute
+    var max = 65.28 + (65.28 * 0.5);
     
     //chart frame dimensions
     var chartWidth = window.innerWidth * 0.425,
-        chartHeight = 473,
-        leftPadding = 25,
+        chartHeight = 700,
+        leftPadding = 35,
         rightPadding = 2,
         topBottomPadding = 5,
         chartInnerWidth = chartWidth - leftPadding - rightPadding,
@@ -17,8 +18,8 @@
     
     //create a scale to size bars proportionally to frame and for axis
     var yScale = d3.scaleLinear()
-        .range([463, 0])
-        .domain([0, 110]);
+        .range([690, 0])
+        .domain([0, max]);
     
     //begin script when window loads
     window.onload = setMap();
@@ -51,7 +52,7 @@
         var promises = [
             d3.csv("data/NAmericaData.csv"), //load attributes from csv
             d3.json("data/WorldCountries.topojson"), //load basemap data       
-            d3.json("data/NAmerica.topojson"), //load choropleth spatial data
+            d3.json("data/NAmericaNew.topojson"), //load choropleth spatial data
         ];
         Promise.all(promises).then(callback);
 
@@ -82,6 +83,8 @@
             setChart(csvData, colorScale);
 
             createDropdown(csvData);
+
+            webInfo()
         };
     };  //end of setMap()
 
@@ -109,13 +112,13 @@
     function joinData(namericaCountries,csvData){
         for (var i = 0; i < csvData.length; i++) {
             var csvRegion = csvData[i]; //the current region
-            var csvKey = csvRegion.SOVEREIGNT; //the CSV primary key
+            var csvKey = csvRegion.JoinID; //the CSV primary key
 
             //loop through geojson regions to find correct region
             for (var a = 0; a < namericaCountries.length; a++) {
 
                 var geojsonProps = namericaCountries[a].properties; //the current region geojson properties
-                var geojsonKey = geojsonProps.SOVEREIGNT; //the geojson primary key
+                var geojsonKey = geojsonProps.JoinID; //the geojson primary key
 
                 //where primary keys match, transfer csv data to geojson properties object
                 if (geojsonKey == csvKey) {
@@ -151,6 +154,7 @@
             var val = parseFloat(data[i][expressed]);
             domainArray.push(val);
         };
+        max = d3.max(domainArray)*1.05;
 
         //assign array of expressed values as scale domain
         colorScale.domain(domainArray);
@@ -165,7 +169,7 @@ function setEnumerationUnits(namericaCountries,map,path, colorScale){
         .enter()
         .append("path")
         .attr("class", function(d){
-            return "country " + d.properties.SOVEREIGNT;
+            return "country " + d.properties.JoinID;
         })
         .attr("d", path)
         .style("fill", function(d){            
@@ -191,14 +195,7 @@ function setEnumerationUnits(namericaCountries,map,path, colorScale){
 //function to create coordinated bar chart
 function setChart(csvData, colorScale){
     //chart frame dimensions
-    var chartWidth = window.innerWidth * 0.425,
-        chartHeight = 473,
-        leftPadding = 25,
-        rightPadding = 2,
-        topBottomPadding = 5,
-        chartInnerWidth = chartWidth - leftPadding - rightPadding,
-        chartInnerHeight = chartHeight - topBottomPadding * 2,
-        translate = "translate(" + leftPadding + "," + topBottomPadding + ")";
+   
 
     //create a second svg element to hold the bar chart
     var chart = d3.select("body")
@@ -217,14 +214,10 @@ function setChart(csvData, colorScale){
     //create a text element for the chart title
     var chartTitle = chart
         .append("text")
-        .attr("x", 40)
+        .attr("x", 400)
         .attr("y", 40)
         .attr("class", "chartTitle");
 
-    //create a scale to size bars proportionally to frame and for axis
-    var yScale = d3.scaleLinear()
-        .range([463, 0])
-        .domain([0, 100]);
 
     //in setChart()...set bars for each province
     var bars = chart.selectAll(".bar")
@@ -235,7 +228,7 @@ function setChart(csvData, colorScale){
             return b[expressed]-a[expressed]
         })
         .attr("class", function(d){
-            return "bar " + d.SOVEREIGNT;
+            return "bar " + d.JoinID;
         })
         .attr("width", chartInnerWidth / csvData.length - 1)
         .on("mouseover", function(event, d){
@@ -328,6 +321,17 @@ function changeAttribute(attribute, csvData){
         })
         .duration(500);
 
+    yScale = d3.scaleLinear()
+        .range([690, 0])
+        .domain([0, max]);
+
+    //create vertical axis generator
+    var yAxis = d3.axisLeft()
+        .scale(yScale);
+
+    //place axis
+    d3.select( ".axis").call(yAxis);
+
     updateChart(bars, csvData.length, colorScale);
 }; //end of changeAttribute()
 
@@ -339,7 +343,7 @@ function updateChart(bars, n, colorScale){
         })
         //size/resize bars
         .attr("height", function(d, i){
-            return 463 - yScale(parseFloat(d[expressed]));
+            return 690 - yScale(parseFloat(d[expressed]));
         })
         .attr("y", function(d, i){
             return yScale(parseFloat(d[expressed])) + topBottomPadding;
@@ -356,14 +360,14 @@ function updateChart(bars, n, colorScale){
 
     //at the bottom of updateChart()...add text to chart title
     var chartTitle = d3.select(".chartTitle")
-        .text(expressed + " in each region");
+        .text(expressed + " in North America");
 
 };
 
 //function to highlight enumeration units and bars
 function highlight(props){
     //change stroke
-    var selected = d3.selectAll("." + props.SOVEREIGNT)
+    var selected = d3.selectAll("." + props.JoinID)
         .style("stroke", "orange")
         .style("stroke-width", "2");
 
@@ -372,7 +376,7 @@ function highlight(props){
 
 //function to reset the element style on mouseout
 function dehighlight(props){
-    var selected = d3.selectAll("." + props.SOVEREIGNT)
+    var selected = d3.selectAll("." + props.JoinID)
         .style("stroke", function(){
             return getStyle(this, "stroke")
         })
@@ -435,5 +439,28 @@ function moveLabel(){
         .style("left", x + "px")
         .style("top", y + "px");
 };
+
+//function for webpage information
+function webInfo(){
+    //add info box with text
+    var infoBox = d3.select("body")
+        .append("div")
+        .attr("class", "infoBox")
+        .html('<p align=left>This map and corresponding chart highlight various attributes of some North American Countries. Take a look at how some of our closest neighbors compare to each other. Use the dropdown menu to change attributes. Also, feel free to explore the chart to locate outliers or other interesting trends.</p><p align=left>Sources of Data:</p><p align=left>CO2 Emmission data: <a href="https://data.worldbank.org/indicator/EN.ATM.CO2E.PC">World Bank Emission Data</a> &nbsp;&nbsp;&nbsp;&nbsp; GDP Per Capita Data: <a href="https://www.imf.org/en/Home">International Money Fund</a> &nbsp;&nbsp;&nbsp;&nbsp; Protected Areas Data: <a href="https://data.worldbank.org/indicator/ER.LND.PTLD.ZS">World Bank Protected Areas</a> &nbsp;&nbsp;&nbsp;&nbsp; Life Expectancy Data: <a href="https://www.worldbank.org/en/home">World Bank Group</a></p>')
+
+    //add metadata text
+    var metadata = d3.select("body")
+        .append("div")
+        .attr("class", "metadata")
+        .attr("text-anchor", "right")
+        .html('<p align=right>Map Created by Alex Larson for UW-Madison - GEOG575</p><p align=right>Basemap Shapefiles from Natural Earth</p><p align=right>Map Projection: Azimuthal Equal Area </p><p align=right>Mapped Data from World Bank Group (Life Expectancy, presented in years; CO2 Emissions, presented in metric tons per capita; Percent of total protected areas),</p><p align=right>International Money Fund (GDP, presented in 1000 USD), Population Density Derived from Population over Area</p>');    
+
+    //add background to metadata
+    var metaBackground = d3.select("body")
+        .append("svg")
+        .attr("class", "metaBackground")
+        .attr("height", 110)
+        .attr("width", window.innerWidth);
+}
 
 })(); //last line of main.js
